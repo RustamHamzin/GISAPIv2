@@ -33,6 +33,8 @@ namespace GisZhkhAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetContracts(int? statusId = null)
         {
+            try
+            {
             var draw = Request.Query["draw"].FirstOrDefault();
             var start = Request.Query["start"].FirstOrDefault();
             var length = Request.Query["length"].FirstOrDefault();
@@ -42,6 +44,8 @@ namespace GisZhkhAdmin.Controllers
 
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                System.Diagnostics.Debug.WriteLine($"GetContracts called with statusId: {statusId}");
 
             var query = _context.Contracts.Include(c => c.Status).AsQueryable();
 
@@ -108,6 +112,18 @@ namespace GisZhkhAdmin.Controllers
                 recordsFiltered = totalRecords,
                 data = contracts 
             });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in GetContracts: {ex.Message}");
+                return Json(new { 
+                    draw = Request.Query["draw"].FirstOrDefault(),
+                    recordsTotal = 0,
+                    recordsFiltered = 0,
+                    data = new object[0],
+                    error = ex.Message
+                });
+            }
         }
     }
 }

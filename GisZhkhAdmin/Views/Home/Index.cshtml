@@ -213,21 +213,37 @@
     
     <script>
         $(document).ready(function() {
+            console.log('Document ready - initializing dashboard');
+            
             // Initialize DataTable
             var contractsTable = $('#contracts-table').DataTable({
                 processing: true,
                 serverSide: true,
+                destroy: true,
                 ajax: {
                     url: '@Url.Action("GetContracts", "Contracts")',
                     type: 'GET',
                     data: function(d) {
                         d.statusId = $('#contracts-table').data('status-filter');
+                        console.log('DataTable request with statusId:', d.statusId);
                     }
                 },
                 columns: [
                     { data: 'number', name: 'Number' },
-                    { data: 'signDate', name: 'SignDate' },
-                    { data: 'startDate', name: 'StartDate' },
+                    { 
+                        data: 'signDate', 
+                        name: 'SignDate',
+                        render: function(data, type, row) {
+                            return data || '';
+                        }
+                    },
+                    { 
+                        data: 'startDate', 
+                        name: 'StartDate',
+                        render: function(data, type, row) {
+                            return data || '';
+                        }
+                    },
                     { 
                         data: 'endDate', 
                         name: 'EndDate',
@@ -279,6 +295,7 @@
 
             // Handle KPI card clicks
             $('.small-box, .small-box-footer').click(function(e) {
+                console.log('KPI card clicked');
                 e.preventDefault();
                 
                 var cardType = $(this).data('card-type') || $(this).closest('.small-box').data('card-type');
@@ -304,6 +321,7 @@
                         break;
                 }
                 
+                console.log('Filtering by statusId:', statusId, 'Title:', title);
                 // Update table title and filter
                 $('#table-title').text(title);
                 $('#contracts-table').data('status-filter', statusId);
@@ -313,6 +331,7 @@
                 
                 // Reload table data
                 contractsTable.ajax.reload();
+                console.log('Table reloaded');
                 
                 // Scroll to table
                 $('html, body').animate({
@@ -322,6 +341,7 @@
 
             // Handle close table button
             $('#close-table').click(function() {
+                console.log('Close table clicked');
                 $('#contracts-section').slideUp();
             });
 
@@ -346,18 +366,27 @@
                     responsive: true,
                     legend: {
                         display: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
                     }
                 }
             });
+            
+            console.log('Dashboard initialization complete');
         });
 
         // Contract action functions
         function viewContract(id) {
+            console.log('View contract:', id);
             // Implement view contract functionality
             alert('Просмотр договора #' + id);
         }
 
         function editContract(id) {
+            console.log('Edit contract:', id);
             // Implement edit contract functionality
             alert('Редактирование договора #' + id);
         }

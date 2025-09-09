@@ -12,33 +12,19 @@
     <!-- AdminLTE -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap4.min.css">
     
     <style>
-        .content-wrapper {
-            margin-left: 250px;
-        }
-        
-        .main-sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1000;
-        }
-        
-        .navbar {
-            margin-left: 250px;
-        }
-        
         .small-box {
             cursor: pointer;
             transition: transform 0.2s;
+            border-radius: 0.25rem;
         }
         
         .small-box:hover {
             transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         }
         
         .info-box {
@@ -48,6 +34,14 @@
         .chart-legend li {
             list-style: none;
             margin-bottom: 5px;
+        }
+        
+        .small-box-footer {
+            text-decoration: none !important;
+        }
+        
+        .small-box .icon {
+            transition: all 0.3s linear;
         }
     </style>
 </head>
@@ -178,9 +172,9 @@
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap4.min.js"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
 </body>
