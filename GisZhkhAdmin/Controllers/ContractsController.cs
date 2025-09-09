@@ -33,6 +33,16 @@ namespace GisZhkhAdmin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetContracts(int? statusId = null)
         {
+            var draw = Request.Query["draw"].FirstOrDefault();
+            var start = Request.Query["start"].FirstOrDefault();
+            var length = Request.Query["length"].FirstOrDefault();
+            var searchValue = Request.Query["search[value]"].FirstOrDefault();
+            var sortColumn = Request.Query["order[0][column]"].FirstOrDefault();
+            var sortColumnDirection = Request.Query["order[0][dir]"].FirstOrDefault();
+
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+
             var query = _context.Contracts.Include(c => c.Status).AsQueryable();
 
             if (statusId.HasValue)
@@ -40,7 +50,46 @@ namespace GisZhkhAdmin.Controllers
                 query = query.Where(c => c.StatusId == statusId.Value);
             }
 
+            // Search functionality
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                query = query.Where(c => c.Number.Contains(searchValue) ||
+                                       c.Description.Contains(searchValue) ||
+                                       c.Status.Name.Contains(searchValue));
+            }
+
+            // Sorting
+            if (!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDirection))
+            {
+                switch (sortColumn)
+                {
+                    case "0":
+                        query = sortColumnDirection == "asc" ? query.OrderBy(c => c.Number) : query.OrderByDescending(c => c.Number);
+                        break;
+                    case "1":
+                        query = sortColumnDirection == "asc" ? query.OrderBy(c => c.SignDate) : query.OrderByDescending(c => c.SignDate);
+                        break;
+                    case "2":
+                        query = sortColumnDirection == "asc" ? query.OrderBy(c => c.StartDate) : query.OrderByDescending(c => c.StartDate);
+                        break;
+                    case "4":
+                        query = sortColumnDirection == "asc" ? query.OrderBy(c => c.Status.Name) : query.OrderByDescending(c => c.Status.Name);
+                        break;
+                    default:
+                        query = query.OrderBy(c => c.Id);
+                        break;
+                }
+            }
+            else
+            {
+                query = query.OrderByDescending(c => c.CreatedAt);
+            }
+
+            var totalRecords = await query.CountAsync();
+
             var contracts = await query
+                .Skip(skip)
+                .Take(pageSize)
                 .Select(c => new
                 {
                     c.Id,
@@ -53,7 +102,12 @@ namespace GisZhkhAdmin.Controllers
                 })
                 .ToListAsync();
 
-            return Json(new { data = contracts });
+            return Json(new { 
+                draw = draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = totalRecords,
+                data = contracts 
+            });
         }
     }
 }

@@ -1,0 +1,365 @@
+@model GisZhkhAdmin.ViewModels.ContractDashboardViewModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Дашборд</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item active">Главная</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- KPI Cards Row -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info" data-card-type="total" style="cursor: pointer;">
+                    <div class="inner">
+                        <h3>@Model.TotalContracts</h3>
+                        <p>Всего договоров</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <a href="#" class="small-box-footer" data-card-type="total">
+                        Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success" data-card-type="loaded" style="cursor: pointer;">
+                    <div class="inner">
+                        <h3>@Model.LoadedToGis</h3>
+                        <p>Загружено в ГИС ЖКХ</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <a href="#" class="small-box-footer" data-card-type="loaded">
+                        Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning" data-card-type="pending" style="cursor: pointer;">
+                    <div class="inner">
+                        <h3>@Model.NotLoadedToGis</h3>
+                        <p>Не загружено в ГИС ЖКХ</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <a href="#" class="small-box-footer" data-card-type="pending">
+                        Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger" data-card-type="error" style="cursor: pointer;">
+                    <div class="inner">
+                        <h3>@Model.WithErrors</h3>
+                        <p>С ошибками</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <a href="#" class="small-box-footer" data-card-type="error">
+                        Подробнее <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contracts Table Section -->
+        <div class="row" id="contracts-section" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title" id="table-title">Все договора</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" id="close-table">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="contracts-table" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>№ договора</th>
+                                        <th>Дата подписания</th>
+                                        <th>Дата начала</th>
+                                        <th>Дата окончания</th>
+                                        <th>Статус</th>
+                                        <th>Описание</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data will be loaded via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info Row -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Статистика по статусам
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="chart-responsive">
+                                    <canvas id="statusChart" height="150"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <ul class="chart-legend clearfix">
+                                    <li><i class="far fa-circle text-success"></i> Загружено</li>
+                                    <li><i class="far fa-circle text-warning"></i> Ожидает</li>
+                                    <li><i class="far fa-circle text-danger"></i> Ошибка</li>
+                                    <li><i class="far fa-circle text-info"></i> Активный</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Информация о системе
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-info"><i class="fas fa-user"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Текущий пользователь</span>
+                                <span class="info-box-number">@User.Identity?.Name</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <span class="info-box-icon bg-success"><i class="fas fa-shield-alt"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Роль</span>
+                                <span class="info-box-number">
+                                    @if (User.IsInRole("Administrator"))
+                                    {
+                                        <span class="badge badge-danger">Администратор</span>
+                                    }
+                                    else if (User.IsInRole("Observer"))
+                                    {
+                                        <span class="badge badge-info">Наблюдатель</span>
+                                    }
+                                    else if (User.IsInRole("AreaProgrammer"))
+                                    {
+                                        <span class="badge badge-warning">Программист участка</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <span class="info-box-icon bg-warning"><i class="fas fa-clock"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Последнее обновление</span>
+                                <span class="info-box-number">@DateTime.Now.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var contractsTable = $('#contracts-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '@Url.Action("GetContracts", "Contracts")',
+                    type: 'GET',
+                    data: function(d) {
+                        d.statusId = $('#contracts-table').data('status-filter');
+                    }
+                },
+                columns: [
+                    { data: 'number', name: 'Number' },
+                    { data: 'signDate', name: 'SignDate' },
+                    { data: 'startDate', name: 'StartDate' },
+                    { 
+                        data: 'endDate', 
+                        name: 'EndDate',
+                        render: function(data, type, row) {
+                            return data || 'Не указана';
+                        }
+                    },
+                    { 
+                        data: 'status', 
+                        name: 'Status',
+                        render: function(data, type, row) {
+                            var badgeClass = 'badge-secondary';
+                            switch(data) {
+                                case 'Загружено': badgeClass = 'badge-success'; break;
+                                case 'Ожидает': badgeClass = 'badge-warning'; break;
+                                case 'Ошибка': badgeClass = 'badge-danger'; break;
+                                case 'Активный': badgeClass = 'badge-info'; break;
+                            }
+                            return '<span class="badge ' + badgeClass + '">' + data + '</span>';
+                        }
+                    },
+                    { 
+                        data: 'description', 
+                        name: 'Description',
+                        render: function(data, type, row) {
+                            if (data && data.length > 50) {
+                                return data.substring(0, 50) + '...';
+                            }
+                            return data || '';
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function(data, type, row) {
+                            return '<div class="btn-group">' +
+                                   '<button class="btn btn-sm btn-info" onclick="viewContract(' + row.id + ')"><i class="fas fa-eye"></i></button>' +
+                                   '<button class="btn btn-sm btn-warning" onclick="editContract(' + row.id + ')"><i class="fas fa-edit"></i></button>' +
+                                   '</div>';
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/ru.json'
+                },
+                pageLength: 10,
+                responsive: true
+            });
+
+            // Handle KPI card clicks
+            $('.small-box, .small-box-footer').click(function(e) {
+                e.preventDefault();
+                
+                var cardType = $(this).data('card-type') || $(this).closest('.small-box').data('card-type');
+                var statusId = null;
+                var title = 'Все договора';
+                
+                switch(cardType) {
+                    case 'total':
+                        statusId = null;
+                        title = 'Все договора';
+                        break;
+                    case 'loaded':
+                        statusId = 2;
+                        title = 'Договора загруженные в ГИС ЖКХ';
+                        break;
+                    case 'pending':
+                        statusId = 1;
+                        title = 'Договора ожидающие загрузки в ГИС ЖКХ';
+                        break;
+                    case 'error':
+                        statusId = 3;
+                        title = 'Договора с ошибками загрузки';
+                        break;
+                }
+                
+                // Update table title and filter
+                $('#table-title').text(title);
+                $('#contracts-table').data('status-filter', statusId);
+                
+                // Show table section
+                $('#contracts-section').slideDown();
+                
+                // Reload table data
+                contractsTable.ajax.reload();
+                
+                // Scroll to table
+                $('html, body').animate({
+                    scrollTop: $('#contracts-section').offset().top - 100
+                }, 500);
+            });
+
+            // Handle close table button
+            $('#close-table').click(function() {
+                $('#contracts-section').slideUp();
+            });
+
+            // Initialize status chart
+            var ctx = document.getElementById('statusChart').getContext('2d');
+            var statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Загружено', 'Ожидает', 'Ошибка', 'Активный'],
+                    datasets: [{
+                        data: [@Model.LoadedToGis, @Model.NotLoadedToGis, @Model.WithErrors, @Model.Active],
+                        backgroundColor: [
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545',
+                            '#17a2b8'
+                        ]
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        });
+
+        // Contract action functions
+        function viewContract(id) {
+            // Implement view contract functionality
+            alert('Просмотр договора #' + id);
+        }
+
+        function editContract(id) {
+            // Implement edit contract functionality
+            alert('Редактирование договора #' + id);
+        }
+    </script>
+}
