@@ -104,15 +104,12 @@
                             </a>
                         </li>
                         
-                        @if (User.IsInRole("Administrator") || User.IsInRole("Observer"))
-                        {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-map-marker-alt"></i>
-                                    <p>Адресный классификатор</p>
-                                </a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-map-marker-alt"></i>
+                                <p>Адресный классификатор</p>
+                            </a>
+                        </li>
                         
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Contracts")" class="nav-link">
@@ -121,22 +118,19 @@
                             </a>
                         </li>
                         
-                        @if (User.IsInRole("Administrator") || User.IsInRole("AreaProgrammer"))
-                        {
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tachometer-alt"></i>
-                                    <p>Приборы учета</p>
-                                </a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-chart-line"></i>
-                                    <p>Показания</p>
-                                </a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-gauge"></i>
+                                <p>Приборы учета</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>Показания</p>
+                            </a>
+                        </li>
                         
                         <li class="nav-item">
                             <a href="#" class="nav-link">
