@@ -1,0 +1,64 @@
+@model GisZhkhAdmin.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Вход в систему";
+    Layout = "_LoginLayout";
+}
+
+<div class="card login-card shadow rounded-4">
+    <div class="card-header login-header text-center py-4">
+        <h3 class="mb-0">
+            <i class="fas fa-building me-2"></i>
+            ГИС ЖКХ
+        </h3>
+        <p class="mb-0 mt-2">Админ-панель</p>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    <i class="fas fa-envelope me-1"></i>
+                    Email
+                </label>
+                <input asp-for="Email" class="form-control form-control-lg" placeholder="Введите email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">
+                    <i class="fas fa-lock me-1"></i>
+                    Пароль
+                </label>
+                <input asp-for="Password" class="form-control form-control-lg" placeholder="Введите пароль" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" class="form-check-input" />
+                <label asp-for="RememberMe" class="form-check-label">
+                    Запомнить меня
+                </label>
+            </div>
+            
+            <button type="submit" class="btn btn-login btn-lg w-100 text-white">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Войти
+            </button>
+        </form>
+        
+        <hr class="my-4">
+        
+        <div class="text-center">
+            <small class="text-muted">
+                Тестовые учетные записи:<br>
+                <strong>admin@giszhkh.local</strong> / Admin123!<br>
+                <strong>observer@giszhkh.local</strong> / Observer123!
+            </small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
